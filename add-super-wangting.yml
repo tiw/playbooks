@@ -1,0 +1,9 @@
+---
+- hosts: super-wang-host
+  vars:
+    http_port: 80
+  remote_user: ubuntu
+  sudo: yes
+  tasks:
+  - name: create wangting user and add to sudo group
+    action: user name=wangting shell=/bin/bash groups=sudo append=yes password=$1$SomeSalt$9eo8Qw31.tVCT7YvO79gw.

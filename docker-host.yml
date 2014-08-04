@@ -1,0 +1,40 @@
+---
+- hosts: docker-host
+  vars:
+    http_port: 80
+    docker_url: https://get.docker.io/builds/Linux/x86_64/docker-latest
+    src_dir: /data/src
+    docker_work_dir: /data/docker-data
+    dev_group: dev
+  remote_user: wangting
+  sudo: yes
+  tasks:
+  - name: create group for dev
+    sudo: true
+    action: shell groupadd -f dev
+  - name: create work dir in data disk
+    file: path={{ src_dir }} state=directory owner=www-data group={{ dev_group }}
+  - name: nginx installation
+    apt: pkg=nginx update_cache=yes
+  - name: install docker
+    apt: pkg=docker.io update_cache=yes
+  - name: start docker
+    service: name=docker.io state=stopped
+  - name: download latest docker, docker installed per apt is not new.
+    sudo: true
+    copy: src=/data/work/ansible-playbooks/docker dest={{ src_dir }}/docker owner=root group=root
+  - name: change mode of docker
+    action: shell chmod +x {{ src_dir }}/docker
+  - name: relink docker to newst version
+    sudo: true
+    action: shell sudo rm -f /usr/local/bin/docker && sudo  ln -s {{ src_dir }}/docker /usr/local/bin/docker
+  - name: config docker to use latest docker
+    sudo: true
+    action: shell awk  -v dockercmd='DOCKER="/usr/local/bin/docker"' -v s="^#DOCKER=" '{if (match($0, s)) {; print; getline;print dockercmd; } else print }' /etc/default/docker.io > /tmp/docker.io && mv /tmp/docker.io /etc/default/docker.io
+  - name: create docker work dir
+    file: path={{ docker_work_dir }} state=directory owner=root group=docker
+  - name: config docker working dir
+    sudo: true
+    action: shell awk -v dockercmd='DOCKER_OPTS="-g {{ docker_work_dir }}"' -v s="^#DOCKER_OPTS=" '{if (match($0, s)) {; print; getline;print dockercmd; } else print }' /etc/default/docker.io > /tmp/docker.io && mv /tmp/docker.io /etc/default/docker.io
+  - name: start docker
+    service: name=docker.io state=started
