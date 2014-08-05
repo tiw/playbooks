@@ -9,6 +9,8 @@
     apt: pkg=git update_cache=yes
   - name: clone vundle
     action: git repo=https://github.com/gmarik/Vundle.vim.git dest=/home/wangting/.vim/bundle/Vundle.vim 
+  - name: clone config
+    action: git repo=https://github.com/tiw/my_configs.git dest=/tmp/my_configs
   - name: copy vimrc
-    copy: src=~/.vimrc dest=/home/wangting/.vimrc
+    action: shell cp /tmp/my_configs/.vimrc /home/wangting/.vimrc
 
