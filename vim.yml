@@ -1,0 +1,14 @@
+---
+- hosts: vim
+  vars:
+    src: xxx
+  remote_user: wangting
+  tasks:
+  - name: install git
+    sudo: true
+    apt: pkg=git update_cache=yes
+  - name: clone vundle
+    action: git repo=https://github.com/gmarik/Vundle.vim.git dest=/home/wangting/.vim/bundle/Vundle.vim 
+  - name: copy vimrc
+    copy: src=~/.vimrc dest=/home/wangting/.vimrc
+

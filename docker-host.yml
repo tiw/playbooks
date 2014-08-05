@@ -22,7 +22,7 @@
     service: name=docker.io state=stopped
   - name: download latest docker, docker installed per apt is not new.
     sudo: true
-    copy: src=/data/work/ansible-playbooks/docker dest={{ src_dir }}/docker owner=root group=root
+    copy: src=./docker dest={{ src_dir }}/docker owner=root group=root
   - name: change mode of docker
     action: shell chmod +x {{ src_dir }}/docker
   - name: relink docker to newst version
