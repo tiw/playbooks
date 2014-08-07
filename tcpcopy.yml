@@ -1,0 +1,34 @@
+---
+- hosts: tcpcopy
+  vars:
+    build_dir: /tmp
+    lib_dir: ./tcpcopy-files
+  remote_user: wangting
+  sudo: yes
+  tasks:
+  - name: install flex
+    apt: pkg=flex update-cache=yes
+  - name: install byacc
+    apt: pkg=byacc update-cache=yes
+  - name: get dependent libs src
+    copy: src={{ lib_dir }}/libnetfilter_queue-1.0.2.tar.bz2 dest={{ build_dir }}
+  - name: unzip1
+    action: shell bunzip2 {{ build_dir }}/libnetfilter_queue-1.0.2.tar.bz2 
+  - name: untar1
+    action: shell tar -xvf {{ build_dir }}/libnetfilter_queue-1.0.2.tar
+  - name: get dependent libs src2
+    copy: src={{ lib_dir }}/libmnl-1.0.3.tar.bz2 dest={{ build_dir }}
+  - name: unzip2
+    action: shell bunzip2 {{ build_dir }}/libmnl-1.0.3.tar.bz2 && tar -xvf {{ build_dir }}/libmnl-1.0.3.tar
+  - name: get dependent libs src2
+    copy: src={{ lib_dir }}/libnfnetlink-1.0.1.tar.bz2 dest={{ build_dir }}
+  - name: unzip3
+    action: shell bunzip2 {{ build_dir }}/libnfnetlink-1.0.1.tar.bz2 && tar -xvf {{ build_dir }}/libnfnetlink-1.0.1.tar 
+  - name: get tcpcopy src
+    copy: src={{ lib_dir }}/0.9.9.tar.gz dest={{ build_dir }}
+  - name: build libnetfilter
+    action: shell cd {{ build_dir }}/libnetfilter_queue-1.0.2 && ./configure && make 
+  - name: build libmnl
+    action: shell cd {{ build_dir }}/libmnl-1.0.3 && ./configure && make 
+  - name: build libnfnetlink
+    action: shell cd {{ build_dir }}/libnfnetlink-1.0.1 && ./configure && make
