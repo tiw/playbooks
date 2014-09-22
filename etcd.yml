@@ -1,0 +1,16 @@
+---
+- hosts: etcd-host
+  vars:
+    etcd_src: https://github.com/coreos/etcd/releases/download/v0.4.6/etcd-v0.4.6-linux-amd64.tar.gz
+    src_dir: /data/src
+  remote_user: wangting
+  sudo: yes
+  tasks:
+  - name: download etc source
+    sudo: true
+    action: shell wget -O {{ src_dir }}/etcd.tgz {{ etc_src }}
+  - name: unzip package
+    sudo: true
+    action: tar -xzvf {{ src_dir }}/etcd.tgz
+
+
