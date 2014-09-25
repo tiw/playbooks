@@ -1,11 +1,14 @@
 ---
 - hosts: confd-host
   vars:
-    src: https://github.com/kelseyhightower/confd/releases/download/v0.5.0/confd-0.5.0-linux-amd64
+    src: /src/confd/confd-0.5.0-darwin-amd64
     src_dir: /data/src
   remote_user: wangting
   sudo: yes
   tasks:
-  - name: download confd source
+  - name: copy confd source
     sudo: true
-    action: shell wget -O {{ src_dir }}/confd {{ etcd_src }}
+    copy: src={{ src }} dest={{ src_dir }}/confd
+  - name: make confd executalbe
+    sudo: true
+    file: path={{ src_dir }}/confd mode=0755

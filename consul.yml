@@ -1,17 +1,10 @@
-https://dl.bintray.com/mitchellh/consul/0.4.0_linux_amd64.zip
 ---
-- hosts: confd-host
+- hosts: consul-host
   vars:
-    src: https://dl.bintray.com/mitchellh/consul/0.4.0_linux_amd64.zip
+    src: /src/consul/0.4.0_linux_amd64.zip
     src_dir: /data/src
   remote_user: wangting
   sudo: yes
   tasks:
-  - name: download confd source
-    sudo: true
-    action: shell wget -O {{ src_dir }}/consul.zip {{ etcd_src }}
-  - name: create directory
-    file: path={{ src_dir }}/consul state=directory
-  - name: unzip package
-    sudo: true
-    action: unzip {{ src_dir }}/etcd.tgz -d {{ src_dir }}/consul
+  - name: copy an unarchive consul
+    unarchive: src={{ src }} dest={{ src_dir }}
