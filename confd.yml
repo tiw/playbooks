@@ -1,0 +1,11 @@
+---
+- hosts: confd-host
+  vars:
+    src: https://github.com/kelseyhightower/confd/releases/download/v0.5.0/confd-0.5.0-linux-amd64
+    src_dir: /data/src
+  remote_user: wangting
+  sudo: yes
+  tasks:
+  - name: download confd source
+    sudo: true
+    action: shell wget -O {{ src_dir }}/confd {{ etcd_src }}
